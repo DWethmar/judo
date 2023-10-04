@@ -1,38 +1,64 @@
 package skeleton
 
 import (
-	"fmt"
-
 	"github.com/dwethmar/judo/animation"
 	"github.com/dwethmar/judo/components"
+	"github.com/dwethmar/judo/components/graphics"
 	"github.com/dwethmar/judo/direction"
 	"github.com/dwethmar/judo/entity"
 	"github.com/hajimehoshi/ebiten/v2"
 )
 
+const AnimationType = "skeleton.graphics"
+
 var (
-	_ components.Drawer  = (*Graphic)(nil)
-	_ components.Updater = (*Graphic)(nil)
+	_ components.Updater = (*Animation)(nil)
 )
 
-type Graphic struct {
+type Animation struct {
 	entity    *entity.Entity
-	pX, pY    int64
+	direction direction.Direction
+	pX, pY    int64 // previous x, y
 	animation *animation.Skeleton
+	sprite    *graphics.Sprite
+	hasMoved  bool
 }
 
-// Update implements components.Updater.
-func (g *Graphic) Update() error {
+// Init implements components.Updater.
+func (g *Animation) Init() error {
 	if g.animation.Current == nil {
 		g.animation.Current = g.animation.IdleDown
 	}
 
-	var animation *animation.Animation
-	hasMoved := g.pX != g.entity.X || g.pY != g.entity.Y
-	dir := direction.GetDirection(g.pX, g.pY, g.entity.X, g.entity.Y)
+	if g.sprite == nil {
+		g.sprite = graphics.NewSprite(g.entity)
+		g.entity.AddComponent(g.sprite)
+	}
 
-	if hasMoved {
-		switch dir {
+	return nil
+}
+
+// Type implements components.Drawer.
+func (*Animation) Type() string { return AnimationType }
+
+func (g *Animation) setSprite(image *ebiten.Image) {
+	g.sprite.Image = image
+}
+
+// Update implements components.Updater.
+func (g *Animation) Update() error {
+	var animation *animation.Animation
+
+	if g.pX != g.entity.X || g.pY != g.entity.Y {
+		g.direction = direction.GetDirection(g.pX, g.pY, g.entity.X, g.entity.Y)
+		g.pX, g.pY = g.entity.X, g.entity.Y
+		g.hasMoved = true
+	} else {
+		g.hasMoved = false
+	}
+
+	if g.hasMoved {
+		switch g.direction {
 		case direction.Top, direction.TopLeft, direction.TopRight:
 			animation = g.animation.WalkUp
 		case direction.Bottom, direction.BottomLeft, direction.BottomRight:
@@ -45,7 +71,7 @@ func (g *Graphic) Update() error {
 			animation = g.animation.IdleDown
 		}
 	} else {
-		switch dir {
+		switch g.direction {
 		case direction.Top, direction.TopLeft, direction.TopRight:
 			animation = g.animation.IdleUp
 		case direction.Bottom, direction.BottomLeft, direction.BottomRight:
@@ -64,32 +90,17 @@ func (g *Graphic) Update() error {
 		g.animation.Current = animation
 	}
 
-	// last
-	g.animation.Current.Next()
-	g.pX, g.pY = g.entity.X, g.entity.Y
+	g.setSprite(g.animation.Current.Next().(*ebiten.Image))
 
 	return nil
 }
 
 // Priority implements components.Drawer.
-func (*Graphic) Priority() int { return 0 }
+func (*Animation) Priority() int { return 0 }
 
-// Draw implements components.Drawer.
-func (g *Graphic) Draw(screen *ebiten.Image) error {
-	fmt.Println("draw graphic")
-
-	f := g.animation.Current.Frame().(*ebiten.Image)
-
-	op := &ebiten.DrawImageOptions{}
-	op.GeoM.Translate(float64(g.entity.X), float64(g.entity.Y))
-	screen.DrawImage(f, op)
-
-	return nil
-}
-
-// NewGraphic creates a new Graphic.
-func NewGraphic(e *entity.Entity) *Graphic {
-	return &Graphic{
+// NewAnimation creates a new Graphic.
+func NewAnimation(e *entity.Entity) *Animation {
+	return &Animation{
 		entity:    e,
 		animation: animation.NewSkeleton(),
 	}
