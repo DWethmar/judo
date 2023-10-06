@@ -25,8 +25,8 @@ func (*Behavior) Type() string { return BehaviorType }
 
 // Update implements components.Updater.
 func (b *Behavior) Update() error {
-	var x, y int64
-	var speed int64 = 1
+	var x, y int32
+	var speed int32 = 1
 
 	if ebiten.IsKeyPressed(ebiten.KeyA) {
 		x = -speed

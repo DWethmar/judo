@@ -17,7 +17,7 @@ var (
 type Sprite struct {
 	entity           *entity.Entity
 	Image            *ebiten.Image
-	OffsetX, OffsetY int64
+	OffsetX, OffsetY int32
 }
 
 // Init implements components.Drawer.
@@ -33,10 +33,12 @@ func (s *Sprite) Draw(screen *ebiten.Image) error {
 		return nil
 	}
 
-	op := &ebiten.DrawImageOptions{}
-	op.GeoM.Translate(float64(s.OffsetX), float64(s.OffsetY))
-	op.GeoM.Translate(float64(s.entity.X), float64(s.entity.Y))
+	x, y := s.entity.WorldPosition()
+	x += s.OffsetX
+	y += s.OffsetY
 
+	op := &ebiten.DrawImageOptions{}
+	op.GeoM.Translate(float64(x), float64(y))
 	screen.DrawImage(s.Image, op)
 	return nil
 }

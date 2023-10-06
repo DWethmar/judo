@@ -4,10 +4,7 @@ import "testing"
 
 func TestGetDirection(t *testing.T) {
 	type args struct {
-		sX int64
-		sY int64
-		dX int64
-		dY int64
+		sX, sY, dX, dY int32
 	}
 	tests := []struct {
 		name string

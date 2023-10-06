@@ -10,57 +10,57 @@ import (
 )
 
 const (
-	skeletonHeight = 64
-	skeletonWidth  = 64
+	skeletonWalkHeight = 64
+	skeletonWalkWidth  = 64
 )
 
 var (
-	SkeletonImg   *ebiten.Image
-	skeletonCells = CreateCells(9, 4, skeletonWidth, skeletonHeight)
+	SkeletonWalkImg *ebiten.Image
 )
 
 var (
-	SkeletonUp1Sprite *ebiten.Image // idle
-	SkeletonUp2Sprite *ebiten.Image
-	SkeletonUp3Sprite *ebiten.Image
-	SkeletonUp4Sprite *ebiten.Image
-	SkeletonUp5Sprite *ebiten.Image
-	SkeletonUp6Sprite *ebiten.Image
-	SkeletonUp7Sprite *ebiten.Image
-	SkeletonUp8Sprite *ebiten.Image
-	SkeletonUp9Sprite *ebiten.Image
+	SkeletonUp1 *ebiten.Image // idle
+	SkeletonUp2 *ebiten.Image
+	SkeletonUp3 *ebiten.Image
+	SkeletonUp4 *ebiten.Image
+	SkeletonUp5 *ebiten.Image
+	SkeletonUp6 *ebiten.Image
+	SkeletonUp7 *ebiten.Image
+	SkeletonUp8 *ebiten.Image
+	SkeletonUp9 *ebiten.Image
 
-	SkeletonLeft1Sprite *ebiten.Image // idle
-	SkeletonLeft2Sprite *ebiten.Image
-	SkeletonLeft3Sprite *ebiten.Image
-	SkeletonLeft4Sprite *ebiten.Image
-	SkeletonLeft5Sprite *ebiten.Image
-	SkeletonLeft6Sprite *ebiten.Image
-	SkeletonLeft7Sprite *ebiten.Image
-	SkeletonLeft8Sprite *ebiten.Image
-	SkeletonLeft9Sprite *ebiten.Image
+	SkeletonLeft1 *ebiten.Image // idle
+	SkeletonLeft2 *ebiten.Image
+	SkeletonLeft3 *ebiten.Image
+	SkeletonLeft4 *ebiten.Image
+	SkeletonLeft5 *ebiten.Image
+	SkeletonLeft6 *ebiten.Image
+	SkeletonLeft7 *ebiten.Image
+	SkeletonLeft8 *ebiten.Image
+	SkeletonLeft9 *ebiten.Image
 
-	SkeletonDown1Sprite *ebiten.Image // idle
-	SkeletonDown2Sprite *ebiten.Image
-	SkeletonDown3Sprite *ebiten.Image
-	SkeletonDown4Sprite *ebiten.Image
-	SkeletonDown5Sprite *ebiten.Image
-	SkeletonDown6Sprite *ebiten.Image
-	SkeletonDown7Sprite *ebiten.Image
-	SkeletonDown8Sprite *ebiten.Image
-	SkeletonDown9Sprite *ebiten.Image
+	SkeletonDown1 *ebiten.Image // idle
+	SkeletonDown2 *ebiten.Image
+	SkeletonDown3 *ebiten.Image
+	SkeletonDown4 *ebiten.Image
+	SkeletonDown5 *ebiten.Image
+	SkeletonDown6 *ebiten.Image
+	SkeletonDown7 *ebiten.Image
+	SkeletonDown8 *ebiten.Image
+	SkeletonDown9 *ebiten.Image
 
-	SkeletonRight1Sprite *ebiten.Image // idle
-	SkeletonRight2Sprite *ebiten.Image
-	SkeletonRight3Sprite *ebiten.Image
-	SkeletonRight4Sprite *ebiten.Image
-	SkeletonRight5Sprite *ebiten.Image
-	SkeletonRight6Sprite *ebiten.Image
-	SkeletonRight7Sprite *ebiten.Image
-	SkeletonRight8Sprite *ebiten.Image
-	SkeletonRight9Sprite *ebiten.Image
+	SkeletonRight1 *ebiten.Image // idle
+	SkeletonRight2 *ebiten.Image
+	SkeletonRight3 *ebiten.Image
+	SkeletonRight4 *ebiten.Image
+	SkeletonRight5 *ebiten.Image
+	SkeletonRight6 *ebiten.Image
+	SkeletonRight7 *ebiten.Image
+	SkeletonRight8 *ebiten.Image
+	SkeletonRight9 *ebiten.Image
 )
 
+// animations
 var (
 	SkeletonMoveUpFrames    = []image.Image{}
 	SkeletonMoveLeftFrames  = []image.Image{}
@@ -74,93 +74,94 @@ func init() {
 		panic(err)
 	}
 
-	SkeletonImg = ebiten.NewImageFromImage(img)
+	SkeletonWalkImg = ebiten.NewImageFromImage(img)
+	cells := CreateCells(9, 4, skeletonWalkWidth, skeletonWalkHeight)
 
-	SkeletonUp1Sprite = SkeletonImg.SubImage(skeletonCells[0][0]).(*ebiten.Image)
-	SkeletonUp2Sprite = SkeletonImg.SubImage(skeletonCells[1][0]).(*ebiten.Image)
-	SkeletonUp3Sprite = SkeletonImg.SubImage(skeletonCells[2][0]).(*ebiten.Image)
-	SkeletonUp4Sprite = SkeletonImg.SubImage(skeletonCells[3][0]).(*ebiten.Image)
-	SkeletonUp5Sprite = SkeletonImg.SubImage(skeletonCells[4][0]).(*ebiten.Image)
-	SkeletonUp6Sprite = SkeletonImg.SubImage(skeletonCells[5][0]).(*ebiten.Image)
-	SkeletonUp7Sprite = SkeletonImg.SubImage(skeletonCells[6][0]).(*ebiten.Image)
-	SkeletonUp8Sprite = SkeletonImg.SubImage(skeletonCells[7][0]).(*ebiten.Image)
-	SkeletonUp9Sprite = SkeletonImg.SubImage(skeletonCells[8][0]).(*ebiten.Image)
+	SkeletonUp1 = SkeletonWalkImg.SubImage(cells[0][0]).(*ebiten.Image)
+	SkeletonUp2 = SkeletonWalkImg.SubImage(cells[1][0]).(*ebiten.Image)
+	SkeletonUp3 = SkeletonWalkImg.SubImage(cells[2][0]).(*ebiten.Image)
+	SkeletonUp4 = SkeletonWalkImg.SubImage(cells[3][0]).(*ebiten.Image)
+	SkeletonUp5 = SkeletonWalkImg.SubImage(cells[4][0]).(*ebiten.Image)
+	SkeletonUp6 = SkeletonWalkImg.SubImage(cells[5][0]).(*ebiten.Image)
+	SkeletonUp7 = SkeletonWalkImg.SubImage(cells[6][0]).(*ebiten.Image)
+	SkeletonUp8 = SkeletonWalkImg.SubImage(cells[7][0]).(*ebiten.Image)
+	SkeletonUp9 = SkeletonWalkImg.SubImage(cells[8][0]).(*ebiten.Image)
 
-	SkeletonLeft1Sprite = SkeletonImg.SubImage(skeletonCells[0][1]).(*ebiten.Image)
-	SkeletonLeft2Sprite = SkeletonImg.SubImage(skeletonCells[1][1]).(*ebiten.Image)
-	SkeletonLeft3Sprite = SkeletonImg.SubImage(skeletonCells[2][1]).(*ebiten.Image)
-	SkeletonLeft4Sprite = SkeletonImg.SubImage(skeletonCells[3][1]).(*ebiten.Image)
-	SkeletonLeft5Sprite = SkeletonImg.SubImage(skeletonCells[4][1]).(*ebiten.Image)
-	SkeletonLeft6Sprite = SkeletonImg.SubImage(skeletonCells[5][1]).(*ebiten.Image)
-	SkeletonLeft7Sprite = SkeletonImg.SubImage(skeletonCells[6][1]).(*ebiten.Image)
-	SkeletonLeft8Sprite = SkeletonImg.SubImage(skeletonCells[7][1]).(*ebiten.Image)
-	SkeletonLeft9Sprite = SkeletonImg.SubImage(skeletonCells[8][1]).(*ebiten.Image)
+	SkeletonLeft1 = SkeletonWalkImg.SubImage(cells[0][1]).(*ebiten.Image)
+	SkeletonLeft2 = SkeletonWalkImg.SubImage(cells[1][1]).(*ebiten.Image)
+	SkeletonLeft3 = SkeletonWalkImg.SubImage(cells[2][1]).(*ebiten.Image)
+	SkeletonLeft4 = SkeletonWalkImg.SubImage(cells[3][1]).(*ebiten.Image)
+	SkeletonLeft5 = SkeletonWalkImg.SubImage(cells[4][1]).(*ebiten.Image)
+	SkeletonLeft6 = SkeletonWalkImg.SubImage(cells[5][1]).(*ebiten.Image)
+	SkeletonLeft7 = SkeletonWalkImg.SubImage(cells[6][1]).(*ebiten.Image)
+	SkeletonLeft8 = SkeletonWalkImg.SubImage(cells[7][1]).(*ebiten.Image)
+	SkeletonLeft9 = SkeletonWalkImg.SubImage(cells[8][1]).(*ebiten.Image)
 
-	SkeletonDown1Sprite = SkeletonImg.SubImage(skeletonCells[0][2]).(*ebiten.Image)
-	SkeletonDown2Sprite = SkeletonImg.SubImage(skeletonCells[1][2]).(*ebiten.Image)
-	SkeletonDown3Sprite = SkeletonImg.SubImage(skeletonCells[2][2]).(*ebiten.Image)
-	SkeletonDown4Sprite = SkeletonImg.SubImage(skeletonCells[3][2]).(*ebiten.Image)
-	SkeletonDown5Sprite = SkeletonImg.SubImage(skeletonCells[4][2]).(*ebiten.Image)
-	SkeletonDown6Sprite = SkeletonImg.SubImage(skeletonCells[5][2]).(*ebiten.Image)
-	SkeletonDown7Sprite = SkeletonImg.SubImage(skeletonCells[6][2]).(*ebiten.Image)
-	SkeletonDown8Sprite = SkeletonImg.SubImage(skeletonCells[7][2]).(*ebiten.Image)
-	SkeletonDown9Sprite = SkeletonImg.SubImage(skeletonCells[8][2]).(*ebiten.Image)
+	SkeletonDown1 = SkeletonWalkImg.SubImage(cells[0][2]).(*ebiten.Image)
+	SkeletonDown2 = SkeletonWalkImg.SubImage(cells[1][2]).(*ebiten.Image)
+	SkeletonDown3 = SkeletonWalkImg.SubImage(cells[2][2]).(*ebiten.Image)
+	SkeletonDown4 = SkeletonWalkImg.SubImage(cells[3][2]).(*ebiten.Image)
+	SkeletonDown5 = SkeletonWalkImg.SubImage(cells[4][2]).(*ebiten.Image)
+	SkeletonDown6 = SkeletonWalkImg.SubImage(cells[5][2]).(*ebiten.Image)
+	SkeletonDown7 = SkeletonWalkImg.SubImage(cells[6][2]).(*ebiten.Image)
+	SkeletonDown8 = SkeletonWalkImg.SubImage(cells[7][2]).(*ebiten.Image)
+	SkeletonDown9 = SkeletonWalkImg.SubImage(cells[8][2]).(*ebiten.Image)
 
-	SkeletonRight1Sprite = SkeletonImg.SubImage(skeletonCells[0][3]).(*ebiten.Image)
-	SkeletonRight2Sprite = SkeletonImg.SubImage(skeletonCells[1][3]).(*ebiten.Image)
-	SkeletonRight3Sprite = SkeletonImg.SubImage(skeletonCells[2][3]).(*ebiten.Image)
-	SkeletonRight4Sprite = SkeletonImg.SubImage(skeletonCells[3][3]).(*ebiten.Image)
-	SkeletonRight5Sprite = SkeletonImg.SubImage(skeletonCells[4][3]).(*ebiten.Image)
-	SkeletonRight6Sprite = SkeletonImg.SubImage(skeletonCells[5][3]).(*ebiten.Image)
-	SkeletonRight7Sprite = SkeletonImg.SubImage(skeletonCells[6][3]).(*ebiten.Image)
-	SkeletonRight8Sprite = SkeletonImg.SubImage(skeletonCells[7][3]).(*ebiten.Image)
-	SkeletonRight9Sprite = SkeletonImg.SubImage(skeletonCells[8][3]).(*ebiten.Image)
+	SkeletonRight1 = SkeletonWalkImg.SubImage(cells[0][3]).(*ebiten.Image)
+	SkeletonRight2 = SkeletonWalkImg.SubImage(cells[1][3]).(*ebiten.Image)
+	SkeletonRight3 = SkeletonWalkImg.SubImage(cells[2][3]).(*ebiten.Image)
+	SkeletonRight4 = SkeletonWalkImg.SubImage(cells[3][3]).(*ebiten.Image)
+	SkeletonRight5 = SkeletonWalkImg.SubImage(cells[4][3]).(*ebiten.Image)
+	SkeletonRight6 = SkeletonWalkImg.SubImage(cells[5][3]).(*ebiten.Image)
+	SkeletonRight7 = SkeletonWalkImg.SubImage(cells[6][3]).(*ebiten.Image)
+	SkeletonRight8 = SkeletonWalkImg.SubImage(cells[7][3]).(*ebiten.Image)
+	SkeletonRight9 = SkeletonWalkImg.SubImage(cells[8][3]).(*ebiten.Image)
 
 	SkeletonMoveUpFrames = []image.Image{
 		// SkeletonUp1Sprite, // idle
-		SkeletonUp2Sprite,
-		SkeletonUp3Sprite,
-		SkeletonUp4Sprite,
-		SkeletonUp5Sprite,
-		SkeletonUp6Sprite,
-		SkeletonUp7Sprite,
-		SkeletonUp8Sprite,
-		SkeletonUp9Sprite,
+		SkeletonUp2,
+		SkeletonUp3,
+		SkeletonUp4,
+		SkeletonUp5,
+		SkeletonUp6,
+		SkeletonUp7,
+		SkeletonUp8,
+		SkeletonUp9,
 	}
 
 	SkeletonMoveLeftFrames = []image.Image{
 		// SkeletonLeft1Sprite, // idle
-		SkeletonLeft2Sprite,
-		SkeletonLeft3Sprite,
-		SkeletonLeft4Sprite,
-		SkeletonLeft5Sprite,
-		SkeletonLeft6Sprite,
-		SkeletonLeft7Sprite,
-		SkeletonLeft8Sprite,
-		SkeletonLeft9Sprite,
+		SkeletonLeft2,
+		SkeletonLeft3,
+		SkeletonLeft4,
+		SkeletonLeft5,
+		SkeletonLeft6,
+		SkeletonLeft7,
+		SkeletonLeft8,
+		SkeletonLeft9,
 	}
 
 	SkeletonMoveDownFrames = []image.Image{
 		// SkeletonDown1Sprite, // idle
-		SkeletonDown2Sprite,
-		SkeletonDown3Sprite,
-		SkeletonDown4Sprite,
-		SkeletonDown5Sprite,
-		SkeletonDown6Sprite,
-		SkeletonDown7Sprite,
-		SkeletonDown8Sprite,
-		SkeletonDown9Sprite,
+		SkeletonDown2,
+		SkeletonDown3,
+		SkeletonDown4,
+		SkeletonDown5,
+		SkeletonDown6,
+		SkeletonDown7,
+		SkeletonDown8,
+		SkeletonDown9,
 	}
 
 	SkeletonMoveRightFrames = []image.Image{
 		// SkeletonRight1Sprite, // idle
-		SkeletonRight2Sprite,
-		SkeletonRight3Sprite,
-		SkeletonRight4Sprite,
-		SkeletonRight5Sprite,
-		SkeletonRight6Sprite,
-		SkeletonRight7Sprite,
-		SkeletonRight8Sprite,
-		SkeletonRight9Sprite,
+		SkeletonRight2,
+		SkeletonRight3,
+		SkeletonRight4,
+		SkeletonRight5,
+		SkeletonRight6,
+		SkeletonRight7,
+		SkeletonRight8,
+		SkeletonRight9,
 	}
 }

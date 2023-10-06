@@ -1,44 +1,59 @@
 package assets
 
-// import (
-// 	"bytes"
-// 	"image"
+import (
+	"image"
 
-// 	_ "embed"
-// 	"image/png"
-// 	_ "image/png"
+	_ "embed"
+	_ "image/png"
 
-// 	"github.com/hajimehoshi/ebiten/v2"
-// )
+	"github.com/hajimehoshi/ebiten/v2"
+)
 
-// var (
-// 	skeletonKillData, _   = staticSpritesFS.ReadFile("sprites/skeleton_kill.png")
-// 	skeletonKillImg, _    = png.Decode(bytes.NewReader(skeletonKillData))
-// 	ebitenSkeletonKillImg = ebiten.NewImageFromImage(skeletonKillImg)
-// )
+const (
+	skeletonKillHeight = 64
+	skeletonKillWidth  = 64
+)
 
-// const SkeletonKillSpriteSize = 64
+var (
+	SkeletonKillImg *ebiten.Image
+)
 
-// var (
-// 	skeletonKillCells = CreateCells(6, 1, SkeletonKillSpriteSize, SkeletonKillSpriteSize)
-// )
+var (
+	SkeletonKill1 *ebiten.Image
+	SkeletonKill2 *ebiten.Image
+	SkeletonKill3 *ebiten.Image
+	SkeletonKill4 *ebiten.Image
+	SkeletonKill5 *ebiten.Image
+	SkeletonKill6 *ebiten.Image
+)
 
-// var (
-// 	SkeletonKill1Sprite = ebitenSkeletonKillImg.SubImage(skeletonKillCells[0])
-// 	SkeletonKill2Sprite = ebitenSkeletonKillImg.SubImage(skeletonKillCells[1])
-// 	SkeletonKill3Sprite = ebitenSkeletonKillImg.SubImage(skeletonKillCells[2])
-// 	SkeletonKill4Sprite = ebitenSkeletonKillImg.SubImage(skeletonKillCells[3])
-// 	SkeletonKill5Sprite = ebitenSkeletonKillImg.SubImage(skeletonKillCells[4])
-// 	SkeletonKill6Sprite = ebitenSkeletonKillImg.SubImage(skeletonKillCells[5])
-// )
+// animations
+var (
+	SkeletonKillFrames = []image.Image{}
+)
 
-// var (
-// 	SkeletonKillFrames = []image.Image{
-// 		SkeletonKill1Sprite,
-// 		SkeletonKill2Sprite,
-// 		SkeletonKill3Sprite,
-// 		SkeletonKill4Sprite,
-// 		SkeletonKill5Sprite,
-// 		SkeletonKill6Sprite,
-// 	}
-// )
+func init() {
+	img, err := loadPng(staticSpritesFS, "sprites/skeleton_kill.png")
+	if err != nil {
+		panic(err)
+	}
+
+	SkeletonKillImg = ebiten.NewImageFromImage(img)
+	cells := CreateCells(6, 1, skeletonKillWidth, skeletonKillHeight)
+
+	SkeletonKill1 = SkeletonKillImg.SubImage(cells[0][0]).(*ebiten.Image)
+	SkeletonKill2 = SkeletonKillImg.SubImage(cells[1][0]).(*ebiten.Image)
+	SkeletonKill3 = SkeletonKillImg.SubImage(cells[2][0]).(*ebiten.Image)
+	SkeletonKill4 = SkeletonKillImg.SubImage(cells[3][0]).(*ebiten.Image)
+	SkeletonKill5 = SkeletonKillImg.SubImage(cells[4][0]).(*ebiten.Image)
+	SkeletonKill6 = SkeletonKillImg.SubImage(cells[5][0]).(*ebiten.Image)
+
+	SkeletonKillFrames = []image.Image{
+		SkeletonKill1,
+		SkeletonKill2,
+		SkeletonKill3,
+		SkeletonKill4,
+		SkeletonKill5,
+		SkeletonKill6,
+	}
+}

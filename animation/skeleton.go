@@ -19,14 +19,12 @@ type Skeleton struct {
 	Kill      *Animation
 }
 
-func NewSkeleton() *Skeleton {
-	framesPerImage := 15
-
+func NewSkeleton(framesPerImage int) *Skeleton {
 	return &Skeleton{
-		IdleDown:  NewAnimator([]image.Image{assets.SkeletonDown1Sprite}, framesPerImage),
-		IdleUp:    NewAnimator([]image.Image{assets.SkeletonUp1Sprite}, framesPerImage),
-		IdleLeft:  NewAnimator([]image.Image{assets.SkeletonLeft1Sprite}, framesPerImage),
-		IdleRight: NewAnimator([]image.Image{assets.SkeletonRight1Sprite}, framesPerImage),
+		IdleDown:  NewAnimator([]image.Image{assets.SkeletonDown1}, framesPerImage),
+		IdleUp:    NewAnimator([]image.Image{assets.SkeletonUp1}, framesPerImage),
+		IdleLeft:  NewAnimator([]image.Image{assets.SkeletonLeft1}, framesPerImage),
+		IdleRight: NewAnimator([]image.Image{assets.SkeletonRight1}, framesPerImage),
 		WalkDown:  NewAnimator(assets.SkeletonMoveDownFrames, framesPerImage),
 		WalkUp:    NewAnimator(assets.SkeletonMoveUpFrames, framesPerImage),
 		WalkLeft:  NewAnimator(assets.SkeletonMoveLeftFrames, framesPerImage),

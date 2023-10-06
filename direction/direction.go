@@ -14,7 +14,7 @@ const (
 	BottomRight
 )
 
-func GetDirection(sX, sY, dX, dY int64) Direction {
+func GetDirection(sX, sY, dX, dY int32) Direction {
 	deltaX := dX - sX
 	deltaY := dY - sY
 

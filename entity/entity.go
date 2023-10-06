@@ -5,11 +5,10 @@ import (
 	"fmt"
 
 	"github.com/dwethmar/judo/components"
-	"github.com/hajimehoshi/ebiten/v2"
 )
 
 type Entity struct {
-	X, Y        int64
+	X, Y        int32
 	parent      *Entity
 	children    []*Entity
 	composition *components.Composition
@@ -23,8 +22,35 @@ func (e *Entity) Init() error {
 	return nil
 }
 
+func (e *Entity) WorldPosition() (x int32, y int32) {
+	x, y = e.X, e.Y
+
+	if e.parent != nil {
+		px, py := e.parent.WorldPosition()
+		x += px
+		y += py
+	}
+
+	return
+}
+
 func (e *Entity) AddComponent(c components.Component) {
 	e.composition.Add(c)
+}
+
+func (e *Entity) Components() []components.Component {
+	return e.composition.Components()
+}
+
+func (e *Entity) Component(t string) components.Component {
+	var c components.Component
+	for _, c = range e.composition.Components() {
+		if c.Type() == t {
+			return c
+		}
+	}
+
+	return nil
 }
 
 func (e *Entity) Parent() *Entity {
@@ -63,30 +89,6 @@ func (e *Entity) RemoveChild(child *Entity) error {
 	}
 
 	return errors.New("entity not found")
-}
-
-func (e *Entity) Draw(screen *ebiten.Image) error {
-	for _, c := range e.composition.Components() {
-		if drawer, ok := c.(components.Drawer); ok {
-			if err := drawer.Draw(screen); err != nil {
-				return err
-			}
-		}
-	}
-
-	return nil
-}
-
-func (e *Entity) Update() error {
-	for _, c := range e.composition.Components() {
-		if updater, ok := c.(components.Updater); ok {
-			if err := updater.Update(); err != nil {
-				return err
-			}
-		}
-	}
-
-	return nil
 }
 
 func NewEntity(options ...Option) *Entity {

@@ -3,6 +3,7 @@ module github.com/dwethmar/judo
 go 1.21.1
 
 require (
+	github.com/google/go-cmp v0.5.9
 	github.com/hajimehoshi/ebiten/v2 v2.6.1
 	golang.org/x/image v0.12.0
 )

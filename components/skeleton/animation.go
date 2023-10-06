@@ -9,7 +9,10 @@ import (
 	"github.com/hajimehoshi/ebiten/v2"
 )
 
-const AnimationType = "skeleton.graphics"
+const (
+	AnimationType  = "skeleton.graphics"
+	AnimationSpeed = 15 // frames per image
+)
 
 var (
 	_ components.Updater = (*Animation)(nil)
@@ -18,13 +21,12 @@ var (
 type Animation struct {
 	entity    *entity.Entity
 	direction direction.Direction
-	pX, pY    int64 // previous x, y
+	pX, pY    int32 // previous x, y
 	animation *animation.Skeleton
 	sprite    *graphics.Sprite
 	hasMoved  bool
 }
 
-// Init implements components.Updater.
 func (g *Animation) Init() error {
 	if g.animation.Current == nil {
 		g.animation.Current = g.animation.IdleDown
@@ -43,25 +45,9 @@ func (*Animation) Type() string { return AnimationType }
 
 func (g *Animation) setSprite(image *ebiten.Image) {
 	g.sprite.Image = image
+	g.sprite.OffsetX = int32(-image.Bounds().Dx() / 2)
+	g.sprite.OffsetY = int32(-image.Bounds().Dy())
 }
-
-// func (g *Animation) Draw(screen *ebiten.Image) error {
-// 	var x, y int
-
-// 	for x = 0; x < 10; x++ {
-// 		for y = 0; y < 4; y++ {
-// 			ops := &ebiten.DrawImageOptions{}
-// 			ops.GeoM.Translate(float64(x*64), float64(y*64))
-
-// 			screen.DrawImage(assets.SkeletonImg.SubImage(image.Rectangle{
-// 				Min: image.Point{X: x * 64, Y: y * 64},
-// 				Max: image.Point{X: x*64 + 64, Y: y*64 + 64},
-// 			}).(*ebiten.Image), ops)
-// 		}
-// 	}
-
-// 	return nil
-// }
 
 // Update implements components.Updater.
 func (g *Animation) Update() error {
@@ -120,6 +106,6 @@ func (*Animation) Priority() int { return 0 }
 func NewAnimation(e *entity.Entity) *Animation {
 	return &Animation{
 		entity:    e,
-		animation: animation.NewSkeleton(),
+		animation: animation.NewSkeleton(AnimationSpeed),
 	}
 }
