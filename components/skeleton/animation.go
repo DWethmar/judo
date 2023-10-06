@@ -45,6 +45,24 @@ func (g *Animation) setSprite(image *ebiten.Image) {
 	g.sprite.Image = image
 }
 
+// func (g *Animation) Draw(screen *ebiten.Image) error {
+// 	var x, y int
+
+// 	for x = 0; x < 10; x++ {
+// 		for y = 0; y < 4; y++ {
+// 			ops := &ebiten.DrawImageOptions{}
+// 			ops.GeoM.Translate(float64(x*64), float64(y*64))
+
+// 			screen.DrawImage(assets.SkeletonImg.SubImage(image.Rectangle{
+// 				Min: image.Point{X: x * 64, Y: y * 64},
+// 				Max: image.Point{X: x*64 + 64, Y: y*64 + 64},
+// 			}).(*ebiten.Image), ops)
+// 		}
+// 	}
+
+// 	return nil
+// }
+
 // Update implements components.Updater.
 func (g *Animation) Update() error {
 	var animation *animation.Animation

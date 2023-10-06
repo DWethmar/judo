@@ -1,7 +1,8 @@
 package graphics
 
 import (
-	"github.com/dwethmar/judo/assets"
+	"fmt"
+
 	"github.com/dwethmar/judo/components"
 	"github.com/dwethmar/judo/entity"
 	"github.com/hajimehoshi/ebiten/v2"
@@ -28,12 +29,14 @@ func (*Sprite) Initialized() bool { return true }
 // Draw implements components.Drawer.
 func (s *Sprite) Draw(screen *ebiten.Image) error {
 	if s.Image == nil {
+		fmt.Printf("image is nil\n")
 		return nil
 	}
 
 	op := &ebiten.DrawImageOptions{}
 	op.GeoM.Translate(float64(s.OffsetX), float64(s.OffsetY))
 	op.GeoM.Translate(float64(s.entity.X), float64(s.entity.Y))
+
 	screen.DrawImage(s.Image, op)
 	return nil
 }
@@ -45,6 +48,6 @@ func (*Sprite) Type() string { return SpriteType }
 func NewSprite(entity *entity.Entity) *Sprite {
 	return &Sprite{
 		entity: entity,
-		Image:  ebiten.NewImageFromImage(assets.Symbol29Sprite),
+		Image:  nil,
 	}
 }

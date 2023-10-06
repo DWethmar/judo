@@ -31,6 +31,6 @@ func NewSkeleton() *Skeleton {
 		WalkUp:    NewAnimator(assets.SkeletonMoveUpFrames, framesPerImage),
 		WalkLeft:  NewAnimator(assets.SkeletonMoveLeftFrames, framesPerImage),
 		WalkRight: NewAnimator(assets.SkeletonMoveRightFrames, framesPerImage),
-		Kill:      NewAnimator(assets.SkeletonKillFrames, framesPerImage),
+		// Kill:      NewAnimator(assets.SkeletonKillFrames, framesPerImage),
 	}
 }

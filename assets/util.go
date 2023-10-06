@@ -6,14 +6,31 @@ import "image"
 // that can be used to draw sprites from a sprite sheet.
 //
 // the rectangles are from left to right, top to bottom
-func CreateCells(columns, rows, width, height int) []image.Rectangle {
-	var cells = make([]image.Rectangle, 0)
-	var dimensions = image.Rect(0, 0, width, height)
+// cells[row][column]
+func CreateCells(columns, rows, width, height int) [][]image.Rectangle {
+	cells := make([][]image.Rectangle, columns)
 
-	for y := 0; y < rows; y++ {
-		for x := 0; x < columns; x++ {
-			cell := dimensions.Add(image.Point{width * x, height * y})
-			cells = append(cells, cell)
+	// for y := 0; y < rows; y++ {
+	// 	cells[y] = make([]image.Rectangle, columns)
+	// 	for x := 0; x < columns; x++ {
+	// 		cells[y][x] = image.Rect(
+	// 			x*width,
+	// 			y*height,
+	// 			(x*width)+width,
+	// 			(y*height)+height,
+	// 		)
+	// 	}
+	// }
+
+	for x := 0; x < columns; x++ {
+		cells[x] = make([]image.Rectangle, rows)
+		for y := 0; y < rows; y++ {
+			cells[x][y] = image.Rect(
+				x*width,
+				y*height,
+				(x*width)+width,
+				(y*height)+height,
+			)
 		}
 	}
 
