@@ -6,7 +6,7 @@ import (
 )
 
 func NewViewport() *entity.Entity {
-	return entity.NewEntity(
+	return entity.New(
 		func(e *entity.Entity) { e.AddComponent(graphics.NewViewport(e)) },
 	)
 }

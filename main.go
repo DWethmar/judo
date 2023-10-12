@@ -11,7 +11,7 @@ import (
 )
 
 func main() {
-	root := entity.NewEntity()
+	root := entity.New()
 
 	viewport := blueprint.NewViewport()
 	viewport.AddChild(blueprint.NewFloor())

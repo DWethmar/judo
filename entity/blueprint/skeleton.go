@@ -7,7 +7,7 @@ import (
 )
 
 func NewSkeleton() *entity.Entity {
-	return entity.NewEntity(
+	return entity.New(
 		func(e *entity.Entity) { e.AddComponent(skeleton.NewBehavior(e)) },
 		func(e *entity.Entity) { e.AddComponent(skeleton.NewAnimation(e)) },
 		func(e *entity.Entity) { e.AddComponent(graphics.NewCamera(e)) },

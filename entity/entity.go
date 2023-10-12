@@ -91,7 +91,7 @@ func (e *Entity) RemoveChild(child *Entity) error {
 	return errors.New("entity not found")
 }
 
-func NewEntity(options ...Option) *Entity {
+func New(options ...Option) *Entity {
 	e := &Entity{
 		composition: components.NewComposition(),
 		children:    []*Entity{},

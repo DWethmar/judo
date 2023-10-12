@@ -6,7 +6,7 @@ import (
 )
 
 func NewFloor() *entity.Entity {
-	return entity.NewEntity(
+	return entity.New(
 		func(e *entity.Entity) { e.AddComponent(floor.NewFloor(e)) },
 	)
 }
