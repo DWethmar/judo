@@ -1,4 +1,4 @@
-package main
+package game
 
 import (
 	"fmt"
@@ -6,20 +6,32 @@ import (
 
 	"github.com/dwethmar/judo/components"
 	"github.com/dwethmar/judo/entity"
+	"github.com/dwethmar/judo/systems"
 	"github.com/hajimehoshi/ebiten/v2"
 )
 
 type Game struct {
-	logger *slog.Logger
-	root   *entity.Entity
+	logger  *slog.Logger
+	systems []systems.System
+	root    *entity.Entity
+}
+
+func New(logger *slog.Logger, root *entity.Entity, systems []systems.System) *Game {
+	return &Game{
+		logger:  logger,
+		systems: systems,
+		root:    root,
+	}
 }
 
 func (g *Game) Update() error {
-	entities := List(g.root)
-
-	if err := Init(entities); err != nil {
-		return fmt.Errorf("error initializing entities: %w", err)
+	for _, s := range g.systems {
+		if err := s.Update(); err != nil {
+			return fmt.Errorf("error updating system %T: %w", s, err)
+		}
 	}
+
+	entities := List(g.root)
 
 	if err := Update(entities); err != nil {
 		return fmt.Errorf("error updating entities: %w", err)
@@ -42,16 +54,6 @@ func (g *Game) Draw(screen *ebiten.Image) {
 
 func (g *Game) Layout(outsideWidth, outsideHeight int) (screenWidth, screenHeight int) {
 	return outsideWidth, outsideHeight
-}
-
-func Init(entities []*entity.Entity) error {
-	for _, e := range entities {
-		if err := e.Init(); err != nil {
-			return fmt.Errorf("error initializing entity: %w", err)
-		}
-	}
-
-	return nil
 }
 
 func Update(entities []*entity.Entity) error {

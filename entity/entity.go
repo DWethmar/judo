@@ -7,11 +7,42 @@ import (
 	"github.com/dwethmar/judo/components"
 )
 
+type State int
+
+const (
+	Draft State = iota // Draft is the default state
+	Active
+)
+
 type Entity struct {
 	X, Y        int32
+	state       State
 	parent      *Entity
 	children    []*Entity
 	composition *components.Composition
+	bus         *Bus
+}
+
+func (e *Entity) State() State { return e.state }
+
+func (e *Entity) SetState(s State) error {
+	if s == Draft {
+		return errors.New("cannot set state to draft")
+	}
+
+	e.state = s
+
+	return nil
+}
+
+// Bus returns the bus of the entity.
+// If the entity does not have a bus, it will return the parent bus.
+func (e *Entity) Bus() *Bus {
+	if e.bus == nil && e.parent != nil {
+		return e.parent.Bus()
+	}
+
+	return e.bus
 }
 
 func (e *Entity) Init() error {
@@ -34,16 +65,12 @@ func (e *Entity) WorldPosition() (x int32, y int32) {
 	return
 }
 
-func (e *Entity) AddComponent(c components.Component) {
-	e.composition.Add(c)
-}
-
-func (e *Entity) Components() []components.Component {
-	return e.composition.Components()
-}
+func (e *Entity) AddComponent(c components.Component) { e.composition.Add(c) }
+func (e *Entity) Components() []components.Component  { return e.composition.Components() }
 
 func (e *Entity) Component(t string) components.Component {
 	var c components.Component
+
 	for _, c = range e.composition.Components() {
 		if c.Type() == t {
 			return c
@@ -53,25 +80,33 @@ func (e *Entity) Component(t string) components.Component {
 	return nil
 }
 
-func (e *Entity) Parent() *Entity {
-	return e.parent
-}
-
-func (e *Entity) setParent(parent *Entity) {
-	e.parent = parent
-}
-
-func (e *Entity) Children() []*Entity {
-	return e.children
-}
+func (e *Entity) Parent() *Entity     { return e.parent }
+func (e *Entity) Children() []*Entity { return e.children }
 
 func (e *Entity) AddChild(child *Entity) error {
 	if child.parent != nil {
-		return errors.New("entity already has a parent")
+		if err := child.parent.RemoveChild(child); err != nil {
+			return fmt.Errorf("failed to remove child from parent: %w", err)
+		}
 	}
 
-	child.setParent(e)
+	child.parent = e
 	e.children = append(e.children, child)
+
+	// send out event
+	if child.State() == Draft {
+		bus := e.Bus()
+		if bus == nil {
+			return errors.New("entity does not have a bus")
+		}
+
+		if err := bus.Created.Send(&CreatedEvent{
+			Entity: child,
+		}); err != nil {
+			return fmt.Errorf("failed to send created event: %w", err)
+		}
+	}
+
 	return nil
 }
 
@@ -80,7 +115,8 @@ func (e *Entity) RemoveChild(child *Entity) error {
 		return errors.New("entity does not have a parent")
 	}
 
-	child.setParent(nil)
+	child.parent = nil
+
 	for i, c := range e.children {
 		if c == child {
 			e.children = append(e.children[:i], e.children[i+1:]...)

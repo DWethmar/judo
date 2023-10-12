@@ -8,3 +8,9 @@ func WithPosition(x, y int32) Option {
 		e.Y = y
 	}
 }
+
+func WithBus(bus *Bus) Option {
+	return func(e *Entity) {
+		e.bus = bus
+	}
+}
