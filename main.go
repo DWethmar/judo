@@ -10,6 +10,7 @@ import (
 	"github.com/dwethmar/judo/game"
 	"github.com/dwethmar/judo/systems"
 	"github.com/dwethmar/judo/systems/entities"
+	"github.com/dwethmar/judo/systems/scaling"
 
 	"github.com/hajimehoshi/ebiten/v2"
 )
@@ -26,9 +27,15 @@ func main() {
 
 	// systems
 	entities := entities.New(logger, bus)
+	scaling := scaling.New()
 
 	// entities
-	root := entity.New(entity.WithBus(bus))
+	root := entity.New(
+		entity.WithBus(bus),
+		entity.WithSystem(entities),
+		entity.WithSystem(scaling),
+	)
+
 	viewport := blueprint.NewViewport()
 
 	if err := root.AddChild(viewport); err != nil {
@@ -47,7 +54,7 @@ func main() {
 	ebiten.SetWindowResizingMode(ebiten.WindowResizingModeEnabled)
 
 	if err := ebiten.RunGame(
-		game.New(slog.Default(), root, []systems.System{entities}),
+		game.New(slog.Default(), root, []systems.System{entities, scaling}),
 	); err != nil {
 		log.Fatal(err)
 	}

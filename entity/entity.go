@@ -3,8 +3,10 @@ package entity
 import (
 	"errors"
 	"fmt"
+	"sort"
 
 	"github.com/dwethmar/judo/components"
+	"github.com/dwethmar/judo/systems"
 )
 
 type State int
@@ -21,6 +23,7 @@ type Entity struct {
 	children    []*Entity
 	composition *components.Composition
 	bus         *Bus
+	systems     map[string]systems.System
 }
 
 func (e *Entity) State() State { return e.state }
@@ -53,7 +56,7 @@ func (e *Entity) Init() error {
 	return nil
 }
 
-func (e *Entity) WorldPosition() (x int32, y int32) {
+func (e *Entity) WorldPosition() (x, y int32) {
 	x, y = e.X, e.Y
 
 	if e.parent != nil {
@@ -97,10 +100,10 @@ func (e *Entity) AddChild(child *Entity) error {
 	if child.State() == Draft {
 		bus := e.Bus()
 		if bus == nil {
-			return errors.New("entity does not have a bus")
+			return errors.New("entity and its parents do not have a bus")
 		}
 
-		if err := bus.Created.Send(&CreatedEvent{
+		if err := bus.CreatedEntity.Send(&CreatedEvent{
 			Entity: child,
 		}); err != nil {
 			return fmt.Errorf("failed to send created event: %w", err)
@@ -125,6 +128,63 @@ func (e *Entity) RemoveChild(child *Entity) error {
 	}
 
 	return errors.New("entity not found")
+}
+
+// AddSystem adds a system to the entity.
+func (e *Entity) AddSystem(s systems.System) {
+	if e.systems == nil {
+		e.systems = map[string]systems.System{}
+	}
+
+	var added bool
+	if s == nil {
+		delete(e.systems, s.Type())
+	} else {
+		e.systems[s.Type()] = s
+		added = true
+	}
+
+	if added {
+		if bus := e.Bus(); bus != nil {
+			e.Bus().AddedSystem.Send(&AddedSystemEvent{
+				Entity: e,
+				System: s,
+			})
+		} else {
+			fmt.Printf("entity does not have a bus: %v\n", e)
+		}
+	}
+}
+
+// Systems returns the systems of the entity and combines them with the parent systems.
+func (e *Entity) inheritedSystems() map[string]systems.System {
+	s := map[string]systems.System{}
+	if e.parent != nil {
+		for k, v := range e.parent.inheritedSystems() {
+			s[k] = v
+		}
+	}
+
+	if e.systems != nil {
+		for k, v := range e.systems {
+			s[k] = v
+		}
+	}
+
+	return s
+}
+
+func (e *Entity) Systems() []systems.System {
+	s := []systems.System{}
+	for _, v := range e.inheritedSystems() {
+		s = append(s, v)
+	}
+
+	sort.Slice(s, func(i, j int) bool {
+		return s[i].Type() < s[j].Type()
+	})
+
+	return s
 }
 
 func New(options ...Option) *Entity {

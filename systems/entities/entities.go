@@ -5,6 +5,11 @@ import (
 	"log/slog"
 
 	"github.com/dwethmar/judo/entity"
+	"github.com/dwethmar/judo/systems"
+)
+
+const (
+	Type = "entities"
 )
 
 type Entities struct {
@@ -12,6 +17,8 @@ type Entities struct {
 	draftEntities []*entity.Entity
 	entities      []*entity.Entity
 }
+
+func (e *Entities) Type() string { return Type }
 
 func (e *Entities) HandleEntityCreated(event *entity.CreatedEvent) error {
 	e.draftEntities = append(e.draftEntities, event.Entity)
@@ -38,7 +45,18 @@ func New(logger *slog.Logger, bus *entity.Bus) *Entities {
 	entities := &Entities{
 		logger: logger,
 	}
-	bus.Created.Subscribe(entities.HandleEntityCreated)
+
+	bus.CreatedEntity.Subscribe(entities.HandleEntityCreated)
 
 	return entities
+}
+
+func FromList(s []systems.System) *Entities {
+	for _, system := range s {
+		if system.Type() == Type {
+			return system.(*Entities)
+		}
+	}
+
+	return nil
 }

@@ -1,5 +1,7 @@
 package entity
 
+import "github.com/dwethmar/judo/systems"
+
 type Option func(*Entity)
 
 func WithPosition(x, y int32) Option {
@@ -9,8 +11,5 @@ func WithPosition(x, y int32) Option {
 	}
 }
 
-func WithBus(bus *Bus) Option {
-	return func(e *Entity) {
-		e.bus = bus
-	}
-}
+func WithBus(bus *Bus) Option            { return func(e *Entity) { e.bus = bus } }
+func WithSystem(s systems.System) Option { return func(e *Entity) { e.AddSystem(s) } }

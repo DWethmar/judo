@@ -7,6 +7,7 @@ import (
 	"github.com/dwethmar/judo/components"
 	"github.com/dwethmar/judo/entity"
 	"github.com/dwethmar/judo/systems"
+	"github.com/dwethmar/judo/systems/scaling"
 	"github.com/hajimehoshi/ebiten/v2"
 )
 
@@ -27,11 +28,11 @@ func New(logger *slog.Logger, root *entity.Entity, systems []systems.System) *Ga
 func (g *Game) Update() error {
 	for _, s := range g.systems {
 		if err := s.Update(); err != nil {
-			return fmt.Errorf("error updating system %T: %w", s, err)
+			return fmt.Errorf("error updating system: %w", err)
 		}
 	}
 
-	entities := List(g.root)
+	entities := append([]*entity.Entity{g.root}, List(g.root)...)
 
 	if err := Update(entities); err != nil {
 		return fmt.Errorf("error updating entities: %w", err)
@@ -41,11 +42,36 @@ func (g *Game) Update() error {
 }
 
 func (g *Game) Draw(screen *ebiten.Image) {
-	entities := List(g.root)
+	scale := 0.0
+	if s := scaling.FromList(g.systems); s != nil {
+		scale = s.Scale
+	}
 
-	if err := Draw(entities, screen); err != nil {
+	entities := append([]*entity.Entity{g.root}, List(g.root)...)
+
+	offScreen := ebiten.NewImage(screen.Bounds().Dx(), screen.Bounds().Dy())
+
+	if err := Draw(entities, offScreen); err != nil {
 		g.logger.Error(err.Error())
 	}
+
+	opt := &ebiten.DrawImageOptions{}
+	opt.GeoM.Scale(scale, scale)
+
+	screenX := screen.Bounds().Dx()
+	screenY := screen.Bounds().Dy()
+
+	offScreenX := offScreen.Bounds().Dx()
+	offScreenY := offScreen.Bounds().Dy()
+
+	// Calculate the offsets to center the image
+	offsetX := (float64(screenX) - float64(offScreenX)*scale) / 2.0
+	offsetY := (float64(screenY) - float64(offScreenY)*scale) / 2.0
+
+	// Apply the offsets
+	opt.GeoM.Translate(offsetX, offsetY)
+
+	screen.DrawImage(offScreen, opt)
 
 	if err := Debug(entities, screen); err != nil {
 		g.logger.Error(err.Error())
