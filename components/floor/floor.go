@@ -11,8 +11,8 @@ import (
 )
 
 const (
-	FloorType = "floor.Floor"
-	FloorSize = 10
+	Type = "floor.Floor"
+	Size = 10
 )
 
 const (
@@ -41,7 +41,7 @@ func (b *Floor) Init() error {
 }
 
 // Type implements components.Updater.
-func (*Floor) Type() string { return FloorType }
+func (*Floor) Type() string { return Type }
 
 // Draw implements components.Drawer.
 func (b *Floor) Draw(screen *ebiten.Image) error {
@@ -79,6 +79,6 @@ func (b *Floor) Update() error {
 func NewFloor(entity *entity.Entity) *Floor {
 	return &Floor{
 		entity: entity,
-		matrix: matrix.New(FloorSize, FloorSize),
+		matrix: matrix.New(Size, Size),
 	}
 }
