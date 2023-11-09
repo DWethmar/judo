@@ -23,10 +23,16 @@ type Position struct {
 // Debug implements components.Debugger.
 func (p *Position) Debug(screen *ebiten.Image) error {
 	scl := scaling.FromList(p.entity.Systems())
+	if scl == nil {
+		return nil
+	}
+
+	screenX, screenY := screen.Bounds().Dx(), screen.Bounds().Dy()
+	worldX, worldY := p.entity.WorldPosition()
+
+	sx, sy := scl.ScreenPosition(worldX, worldY, int32(screenX), int32(screenY))
 
 	x, y := p.entity.X, p.entity.Y
-	sx, sy := scl.ScreenPosition(p.entity.WorldPosition())
-
 	text.Draw(screen, fmt.Sprintf("x: %d, y: %d", x, y), assets.GetVGAFonts(2), int(sx), int(sy), color.White)
 	return nil
 }

@@ -39,13 +39,11 @@ func (s *Scaling) Update() error {
 	return nil
 }
 
-func (s *Scaling) WorldPosition(screenX, screenY int32) (x, y int32) {
-	screenWidth, screenHeight := ebiten.WindowSize()
+func (s *Scaling) WorldPosition(screenX, screenY, screenWidth, screenHeight int32) (x, y int32) {
 	return input.WorldPosition(screenX, screenY, s.Scale, screenWidth, screenHeight)
 }
 
-func (s *Scaling) ScreenPosition(worldX, worldY int32) (x, y int32) {
-	screenWidth, screenHeight := ebiten.WindowSize()
+func (s *Scaling) ScreenPosition(worldX, worldY, screenWidth, screenHeight int32) (x, y int32) {
 	return input.ScreenPosition(worldX, worldY, s.Scale, int32(screenWidth), int32(screenHeight))
 }
 

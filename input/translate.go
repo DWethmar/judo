@@ -1,6 +1,6 @@
 package input
 
-func WorldPosition(screenX, screenY int32, scale float64, screenWidth, screenHeight int) (x, y int32) {
+func WorldPosition(screenX, screenY int32, scale float64, screenWidth, screenHeight int32) (x, y int32) {
 	// Convert int values to float64 for calculations
 	fScreenX := float64(screenX)
 	fScreenY := float64(screenY)

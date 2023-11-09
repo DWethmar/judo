@@ -9,6 +9,7 @@ import (
 	"github.com/dwethmar/judo/systems"
 	"github.com/dwethmar/judo/systems/scaling"
 	"github.com/hajimehoshi/ebiten/v2"
+	"golang.org/x/exp/shiny/materialdesign/colornames"
 )
 
 type Game struct {
@@ -49,7 +50,10 @@ func (g *Game) Draw(screen *ebiten.Image) {
 
 	entities := append([]*entity.Entity{g.root}, List(g.root)...)
 
-	offScreen := ebiten.NewImage(screen.Bounds().Dx(), screen.Bounds().Dy())
+	offScreen := ebiten.NewImage(ebiten.WindowSize())
+
+	// fill the offscreen with black
+	offScreen.Fill(colornames.Grey500)
 
 	if err := Draw(entities, offScreen); err != nil {
 		g.logger.Error(err.Error())

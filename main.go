@@ -52,6 +52,8 @@ func main() {
 
 	// game
 	ebiten.SetWindowResizingMode(ebiten.WindowResizingModeEnabled)
+	ebiten.SetWindowSize(800, 600)
+	ebiten.SetWindowTitle("Judo")
 
 	if err := ebiten.RunGame(
 		game.New(slog.Default(), root, []systems.System{entities, scaling}),
